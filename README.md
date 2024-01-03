@@ -23,3 +23,4 @@ Avec `date_naissance` sous le format `JJ/MM/AAAA`.
 - `1` : Erreur d'argument, nombre d'arguments incorrect. Seulement le fichier des données est attendu.
 - `2` : Erreur d'argument, le fichier des données n'existe pas ou n'est pas accessible.
 - `3` : Erreur d'argument, le fichier des données n'est pas valide.
+- `4` : Erreur lors de la création de l'utilisateur avec `useradd`.
