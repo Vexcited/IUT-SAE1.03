@@ -33,11 +33,11 @@ while read line; do
 	mois_naissance=$(echo $mois_naissance | sed 's/^0//')
 	annee_naissance=$(echo $date_naissance | cut -d"/" -f3)
 
-  # On récupère le mot du mois de naissance (en miniscule)
+  # On récupère le mot du mois de naissance (en minuscule)
   # On utilise la commande "date" pour convertir le mois en mot.
   # +"%B" est le format qu'on utilise pour récupérer le nom entier du mois uniquement. 
-  # On utilise -d "mois_naissance/1" pour spécifier le mois et le jour.
-  mot_mois=$(date -d "$mois_naissance/$jour_naissance" +"%B")
+  # On utilise -d pour spécifier la date.
+  mot_mois=$(date -d "$annee_naissance/$mois_naissance/$jour_naissance" +"%B" | tr "[A-Z]" "[a-z]")
 
   # On vérifie le format de la ligne courante.
   if   [ -z "$nom" ] \
@@ -52,7 +52,7 @@ while read line; do
     || [[ $jour_naissance -lt 1 || $jour_naissance -gt 31 ]] \
     || [[ $mois_naissance -lt 1 || $mois_naissance -gt 12 ]];
   then
-    echo "Le format du fichier fourni est invalide."
+    echo "Erreur: Le format du fichier fourni est invalide."
     # On supprime les fichiers crées, car ils peuvent contenir des informations erronées.
     rm -f users_pass_tmp.txt a1.txt a2.txt a3.txt
     exit 3
@@ -66,7 +66,7 @@ while read line; do
 
   # Le login est constitué de la première lettre du prénom suivi
   # du caractère _ et du nom de famille.
-	username=${prenom:0:1}_$nom
+	username=$(echo $prenom | cut -c 1)_$nom
 
   # On convertit les accents en caractères ASCII.
   # https://unix.stackexchange.com/a/171902
@@ -85,11 +85,11 @@ while read line; do
 	# 2. Lettre du prénom au hasard en minuscule.
   lettre_prenom=$(echo $nom | fold -w1 | shuf -n1 | tr "[A-Z]" "[a-z]")
 	# 3. 3ème chiffre du numéro de téléphone.
-  chiffre_tel=${numero_tel:2:1}
+  chiffre_tel=$(echo $numero_tel | cut -c 3)
   # 4. Un caractère spécial au hasard. 
   caractere_special=$(echo "$%*:;.,?#|@+*/()[]{}_-=&!" | fold -w1 | shuf -n1)
   # 5. Première lettre du mois de naissance en minuscule.
-  lettre_mois=${mot_mois:0:1}
+  lettre_mois=$(echo $mot_mois | cut -c 1)
 
   password="$lettre_nom$lettre_prenom$chiffre_tel$caractere_special$lettre_mois"
 
@@ -108,7 +108,7 @@ while read line; do
 	
   # On vérifie le code de retour de "useradd".
   if (( $? != 0 )); then
-		echo "Erreur lors de la création de l'utilisateur $username"
+		echo "Erreur: Survenue lors de la création de l'utilisateur $username"
 		exit 4
 	fi
 
