@@ -99,18 +99,18 @@ while read line; do
   # On assigne le shell par défaut sur /bin/bash
 	sudo useradd -g a$annee -s /bin/bash --create-home --home "/home/$username" $username
 
+  # On vérifie le code de retour de "useradd".
+  if (( $? != 0 )); then
+		echo "Erreur: Survenue lors de la création de l'utilisateur $username"
+		exit 4
+	fi
+
   userinfo=$nom:$prenom:$username:$password
   echo $userinfo >> a$annee.txt
 
   chuser=$username:$password
   # On assigne le nom d'utilisateur et le mot de passe de l'utilisateur dans `users_pass_tmp.txt`
   echo $chuser >> users_pass_tmp.txt
-	
-  # On vérifie le code de retour de "useradd".
-  if (( $? != 0 )); then
-		echo "Erreur: Survenue lors de la création de l'utilisateur $username"
-		exit 4
-	fi
 
   # Configuration de Visual Studio Code
   # -----------------------------------
